@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -27,7 +28,7 @@ func (s *Service) ParseFile(path string) (model.Job, error) {
 		return model.Job{}, err
 	}
 	var job model.Job
-	dec := json.NewDecoder(strings.NewReader(string(data)))
+	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&job); err != nil {
 		return model.Job{}, fmt.Errorf("parse %s: %w", path, err)
