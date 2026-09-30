@@ -23,6 +23,8 @@ type Expression struct {
 	weekday field
 }
 
+// Parse accepts five fields (minute through weekday) or six fields (second
+// through weekday). Five-field expressions run when seconds equal zero.
 func Parse(expression string) (Expression, error) {
 	parts := strings.Fields(expression)
 	if len(parts) != 5 && len(parts) != 6 {
@@ -52,6 +54,8 @@ func Parse(expression string) (Expression, error) {
 
 func parseZeroField() field { return field{values: map[int]struct{}{0: {}}} }
 
+// parseField expands numeric wildcards, comma lists, ranges, and step values
+// into the set of values that can match a time component.
 func parseField(source string, minimum, maximum int, sundaySeven bool) (field, error) {
 	result := field{values: make(map[int]struct{}), wildcard: source == "*"}
 	for _, item := range strings.Split(source, ",") {
@@ -123,6 +127,7 @@ func (e Expression) Matches(t time.Time) bool {
 	}
 	dayMatches := has(e.day, t.Day())
 	weekdayMatches := has(e.weekday, int(t.Weekday()))
+	// Cron treats day-of-month and weekday as an OR when both are restricted.
 	switch {
 	case e.day.wildcard && e.weekday.wildcard:
 		return true

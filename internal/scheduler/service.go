@@ -119,6 +119,7 @@ func (s *Service) removeLocked(jobID string) {
 func (s *Service) runCronLoop() {
 	defer close(s.loopDone)
 	for {
+		// Align checks to wall-clock seconds so six-field schedules stay precise.
 		now := time.Now().UTC()
 		nextSecond := now.Truncate(time.Second).Add(time.Second)
 		timer := time.NewTimer(time.Until(nextSecond))
@@ -156,6 +157,7 @@ func (s *Service) launch(job model.Job) {
 	s.mu.Unlock()
 	go func() {
 		defer s.runs.Done()
+		// Each trigger gets a goroutine; the semaphore bounds concurrent commands.
 		s.workers <- struct{}{}
 		defer func() { <-s.workers }()
 		ctx, cancel := context.WithTimeout(context.Background(), s.timeout)

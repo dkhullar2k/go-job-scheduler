@@ -45,6 +45,7 @@ func (m *Service) Start() error {
 		return err
 	}
 	m.watcher = watcher
+	// Watch before scanning so file changes during startup remain queued.
 	if err := m.scan(); err != nil {
 		watcher.Close()
 		return err
@@ -95,6 +96,7 @@ func (m *Service) watch() {
 		case now := <-ticker.C:
 			for path, changed := range pending {
 				if now.Sub(changed) >= 200*time.Millisecond {
+					// Coalesce write bursts so partially written JSON is not loaded.
 					m.handle(path)
 					delete(pending, path)
 				}
@@ -111,6 +113,7 @@ func (m *Service) handle(path string) {
 	}
 	job, err := m.parser.ParseFile(path)
 	if err != nil {
+		// Preserve any last-known-good registration when an update is invalid.
 		m.logParse(path, "", err)
 		return
 	}

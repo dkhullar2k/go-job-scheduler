@@ -48,6 +48,7 @@ func (l *Logger) Parse(file, jobID string, parseErr error) error {
 }
 
 func (l *Logger) Execution(jobID, output string, runErr error) error {
+	// Keep output present even for successful commands that print nothing.
 	e := Event{EventType: "execution", Time: time.Now().UTC().Format(time.RFC3339Nano), JobID: jobID, Output: &output, Status: "SUCCESS"}
 	if runErr != nil {
 		e.Status, e.Error = "FAILURE", runErr.Error()

@@ -11,6 +11,7 @@ A small Go scheduler that rebuilds in-memory schedules from JSON files, watches 
 - `internal/task`: task handlers; `execute_command` is implemented.
 - `internal/logging`: parse and execution JSONL records, including combined command output.
 - `jobs/sample.json`: safe recurring example that prints a short line every five minutes.
+- `jobs/hello-world.json`: prints `Hello World` every ten seconds using a six-field cron expression.
 
 ## Run
 
