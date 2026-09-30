@@ -1,0 +1,9 @@
+{
+  "job_id": "sample-001",
+  "description": "Print a short message as a scheduler example.",
+  "schedule": "*/5 * * * *",
+  "task": {
+    "type": "execute_command",
+    "command": "printf 'sample job executed\\n'"
+  }
+}

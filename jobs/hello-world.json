@@ -1,0 +1,9 @@
+{
+  "job_id": "hello-world-001",
+  "description": "Print Hello World every ten seconds.",
+  "schedule": "*/10 * * * * *",
+  "task": {
+    "type": "execute_command",
+    "command": "printf 'Hello World\\n'"
+  }
+}
